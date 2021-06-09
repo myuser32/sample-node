@@ -1,0 +1,127 @@
+- name: Deploy ECS task definition and service
+  hosts: "{{ var_host | default('localhost')}}"
+
+  vars:
+    docker_image_host: "" #"localhost/, dockerhub/"
+    docker_image_tag: "" #any image tag that is in build can be passed to this
+    docker_env_sufix: "" #"-{{ var_host }}" #"-dev","-stg", "-qa", prod goes as ""
+    docker_env_prifix: "" #as env needs to be distinct
+    docker_image_prifix: "" #as images needs to be distinct
+    static_env_prifix: "" #for static containers - mysql rabitmq etc
+
+    docker_network: "bridge-network"
+    network_state: present #absent, present
+    host_port: ""
+    container_port: ""
+    container_state: started #absent, present, stopped, started 
+
+    #service names
+    service_name: "service-name"
+    container_name: "{{ docker_env_prifix }}{{ service_name }}-{{ docker_env_sufix }}"
+    image_path: "{{ docker_image_host }}/{{docker_image_prifix}}{{ docker_env_prifix }}{{ service_name }}:{{ docker_image_tag }}"
+
+    #host entries
+    etc_host_name1: "localhost1"
+    etc_host_name2: "localhost2"
+    etc_host_name3: "localhost3"
+    etc_host_name4: "localhost4"
+
+    etc_host_ip1: "127.0.0.11"
+    etc_host_ip2: "127.0.0.12"
+    etc_host_ip3: "127.0.0.13"
+    etc_host_ip4: "127.0.0.14"
+
+    #container names - list of all the containers - must match with docker image names
+    #ecs service tag suffix
+    ecs_service_tag : "-ecs"
+
+    EcsClusterName: "webone"
+    EcsClusterValue: "webone"
+
+
+  tasks:
+
+#**********************************************************************************
+#
+# Run <> container
+#
+#**********************************************************************************
+    - set_fact: EcsClusterName="{{ EcsClusterValue }}"
+    - name: "{{ container_name }}"
+      ecs_taskdefinition:
+        containers:
+        - name: "{{ container_name }}"
+          cpu: 256
+          essential: true
+          image: "{{ image_path }}"
+          memory: 512
+          portMappings:
+          - containerPort: "{{ container_port }}"
+            hostPort: "{{ host_port }}"
+          hostname: "{{ container_name }}"
+          #extraHosts: [
+          #      {
+          #          "hostname": "{{ etc_host_name1 }}", 
+          #          "ipAddress": "{{ etc_host_ip1 }}"
+          #      },
+          #      {
+          #          "hostname": "{{ etc_host_name2 }}", 
+          #          "ipAddress": "{{ etc_host_ip2 }}"
+          #      },
+          #      {
+          #          "hostname": "{{ etc_host_name3 }}", 
+          #          "ipAddress": "{{ etc_host_ip3 }}"
+          #      },
+          #      {
+          #          "hostname": "{{ etc_host_name4 }}", 
+          #          "ipAddress": "{{ etc_host_ip4 }}"
+          #      }
+          #  ]
+        launch_type: EC2
+        state: present
+        network_mode: bridge
+        family: "{{ container_name }}"
+      register: task_output
+      tags:
+          - "{{ service_name }}"
+
+#**********************************************************************************
+    - name: "create {{ container_name }} ecs service"
+      ecs_service:
+        state: present
+        name: "{{ container_name }}"
+        cluster: "{{EcsClusterName}}"
+        task_definition: "{{ task_output.taskdefinition[\"family\"] }}:{{ task_output.taskdefinition[\"revision\"] }}"
+        desired_count: 1
+      register: service_output
+      tags:
+        - "{{ docker_image_prifix }}{{ service_name }}{{ ecs_service_tag }}"
+
+#**********************************************************************************
+#
+# END
+#
+#**********************************************************************************
+
+#----------------------------------------------------------------------------------------------------------
+    - name: Print details name
+      debug: var=task_output.taskdefinition["family"]
+    - name: Print details Task revision
+      debug: var=task_output.taskdefinition["revision"]
+    - name: Print details Task name and revision
+      debug:
+        msg: "{{  task_output.taskdefinition[\"family\"]   }}:{{ task_output.taskdefinition[\"revision\"] }}"
+
+#**********************************************************************************
+
+    - name: Service Status
+      debug: var=service_output.service.status
+
+    - name: Service name
+      debug: var=service_output.service.serviceName
+
+    - name: Service ARN
+      debug: var=service_output.service.serviceArn
+
+    - name: Cluster ARN
+      debug: var=service_output.service.clusterArn
