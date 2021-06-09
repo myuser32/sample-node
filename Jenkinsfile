@@ -117,7 +117,7 @@ def push(ENVIRONMENT) {
 
     sh "docker tag ${WORK_SPACE}:latest ${IMAGE_REPO}/${WORK_SPACE}:${TAG}-${BUILD_NUMBER}"
     script{
-        docker.withRegistry('https://166876442188.dkr.ecr.ap-southeast-1.amazonaws.com','ecr:ap-southeast-1:aws-cli') {
+        docker.withRegistry('https://151803697644.dkr.ecr.us-east-2.amazonaws.com','ecr:us-east-2:aws-cli') {
             sh "docker push ${IMAGE_REPO}/${WORK_SPACE}:${TAG}-${BUILD_NUMBER}"
             sh "docker rmi ${WORK_SPACE}:latest"
             sh "docker rmi ${IMAGE_REPO}/${WORK_SPACE}:${TAG}-${BUILD_NUMBER}"
