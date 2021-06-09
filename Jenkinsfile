@@ -98,6 +98,9 @@ pipeline {
                     else if(ENV_TYPE == 'ECS'){
                         deploy_on_ecs(GLOBAL_ENVIRONMENT)
                     }
+                    else if(ENV_TYPE == 'master'){
+                        deploy_on_ecs(GLOBAL_ENVIRONMENT)
+                    }
                     else if(ENV_TYPE == 'K8S'){
                         deploy_on_k8s(GLOBAL_ENVIRONMENT)
                     }
