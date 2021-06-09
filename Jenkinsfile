@@ -5,7 +5,7 @@ pipeline {
         GLOBAL_ENVIRONMENT = 'NO_DEPLOYMENT'
         // Need the staging properties anyway to deploy to staging and production simultaneously when doing a prod release
         DEBUG = '-vvv' //set to blank to prevent ansible debug 
-        IMAGE_REPO = '166876442188.dkr.ecr.ap-southeast-1.amazonaws.com'
+        IMAGE_REPO = '151803697644.dkr.ecr.us-east-2.amazonaws.com'
         TAG = "${BRANCH_NAME}"
         HOST_TAG = ""
         ENV_TYPE = 'ECS' //"DOCKER", "ECS", "K8S" 
