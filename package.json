@@ -1,7 +1,7 @@
 {
   "name": "sample-he",
   "version": "1.0.0",
-  "description": "market place aut service",
+  "description": "aut service",
   "main": "src/server.js",
   "scripts": {
     "dev": "set PORT=5000 & set DEBUG=server,server:* & set NODE_ENV=development & nodemon src/index.js",
@@ -17,8 +17,8 @@
   "keywords": [
     "no"
   ],
-  "author": "Windana Rahubedde",
-  "license": "Ideamart",
+  "author": "xtz",
+  "license": "xxz",
   "dependencies": {
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
