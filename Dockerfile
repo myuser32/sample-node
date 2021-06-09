@@ -1,7 +1,5 @@
 FROM node:13.8.0-alpine
-MAINTAINER admin@mp.ideabiz.lk
 RUN apk add --no-cache tzdata 
-ENV TZ=Asia/Colombo
 ENV DEBUG=server,server:*
 ENV PORT=4000
 RUN export DEBUG=server,server:*
