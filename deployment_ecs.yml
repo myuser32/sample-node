@@ -35,8 +35,8 @@
     #ecs service tag suffix
     ecs_service_tag : "-ecs"
 
-    EcsClusterName: "mycluster"
-    EcsClusterValue: "mycluster"
+    EcsClusterName: "MyCluster"
+    EcsClusterValue: "MyCluster"
 
 
   tasks:
