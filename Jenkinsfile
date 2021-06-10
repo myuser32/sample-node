@@ -9,7 +9,7 @@ pipeline {
         TAG = "${BRANCH_NAME}"
         HOST_TAG = ""
         ENV_TYPE = 'ECS' //"DOCKER", "ECS", "K8S" 
-        IMAGE_PRIFIX = 'mp_'
+        IMAGE_PRIFIX = 'app_'
         NETWORK_CONTAINER_TAG = 'my-global-net'
         DOCKER_FILE = 'Dockerfile'
         CONTAINER_PORT = '4000'
